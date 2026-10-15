@@ -1,0 +1,10 @@
+const fs=require('node:fs');
+let html=fs.readFileSync('index.html','utf8');
+html=html.replace(/<section class="intro">[\s\S]*?<\/section>\r?\n/,'').replace(/<div class="scene-caption">[\s\S]*?<\/div>/,'');
+html=html.replace('TOKYO AFTERGLOW / MONOPOLY','3D 大富翁').replace('城市漫遊','56 格').replace('城市合夥人 <span>LIVE SESSION</span>','玩家').replace('東京快訊','遊戲記錄').replace(' <span>✿ 櫻花季</span>','');
+html=html.replace('下一站，東京夢想。','請擲骰').replace('擲骰出發 <span>↗</span>','擲骰');
+html=html.replace('<div class="dice-heading">運命を転がそう <small>ROLL YOUR NEXT CHAPTER</small></div>','').replace('<div id="diceResult">命運，正在轉動。</div>','<div id="diceResult"></div>');
+html=html.replace('東京物語 / CITY STORIES','金額變動').replace('<span class="eyebrow">ようこそ、東京へ。</span>','').replace('<div class="welcome-stamp">東京<br><span>散策</span></div>','').replace('<h2>一擲之間，<br>收藏整座東京。</h2>','<h2>東京大亨</h2>').replace('56 個城市站點，15 × 15 立體棋盤。<br>與三位電腦玩家一起，從東京車站啟程。','15 × 15 棋盤，共 56 格。<br>1 位玩家與 3 位電腦玩家輪流擲骰。').replace(/<div class="welcome-features">[\s\S]*?<\/div>/,'').replace('<br>新版使用獨立存檔，保留舊版遊戲進度。','').replace('出發，東京へ →','開始遊戲');
+fs.writeFileSync('index.html',html);
+let scene=fs.readFileSync('scene.js','utf8');scene=scene.replace("$('diceResult').textContent='命運，正在轉動。'","$('diceResult').textContent=''").replace("label('東 京 都 · 夢 の つ づ き',-.1,.2,6.4,Math.min(9,W/170)*zoom,night?'#8b91a5':'#82908d');",'');fs.writeFileSync('scene.js',scene);
+let game=fs.readFileSync('game.js','utf8').replace('擲骰子，展開下一段旅程。','請擲骰。').replace('正在規劃路線…','準備擲骰…').replace('繼續我的旅程 →','繼續遊戲').replace('地契已登記，從此刻開始收取租金。','土地已登記，其他玩家停留時支付租金。').replace('街景更上一層樓，租金隨之提升。','土地等級與租金已更新。').replace('大吉 · 城市投資開花','投資分紅');fs.writeFileSync('game.js',game);

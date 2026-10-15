@@ -1,0 +1,11 @@
+const fs=require('fs');let base=fs.readFileSync('scripts/verify-tokyo.cjs','utf8').split('(async()=>')[0];fs.writeFileSync('scripts/verify-mobile-zoom.cjs',base+`
+const b=boot();b.run(\`
+function pointer(id,x,y){return{pointerId:id,clientX:x,clientY:y}}
+let inspectCalls=0;ctx.isPointInPath=()=>{inspectCalls++;return false};hits=[{pp:[{x:0,y:0},{x:10,y:0},{x:0,y:10}]}];const originalAngle=angle;
+canvas.onpointerdown(pointer(1,100,100));canvas.onpointerdown(pointer(2,200,100));canvas.onpointermove(pointer(2,300,100));if(Math.abs(zoom-2)>.00001||angle!==originalAngle)throw Error('pinch scale/orbit');canvas.onpointerup(pointer(2,300,100));canvas.onpointermove(pointer(1,120,100));if(Math.abs(angle-originalAngle-.12)>.00001||zoom!==2)throw Error('pinch to orbit jump');canvas.onpointerup(pointer(1,120,100));if(inspectCalls||activePointers.size||drag||pinch)throw Error('pinch accidental click or stale contacts');
+canvas.onpointerdown(pointer(1,50,50));canvas.onpointerup(pointer(1,50,50));if(inspectCalls!==1)throw Error('single tap disabled');
+zoom=1;canvas.onpointerdown(pointer(1,0,0));canvas.onpointerdown(pointer(2,100,0));canvas.onpointermove(pointer(2,1000,0));if(zoom!==2.2)throw Error('max clamp');canvas.onpointermove(pointer(2,1,0));if(zoom!==.55)throw Error('min clamp');canvas.onpointercancel(pointer(2,1,0));canvas.onlostpointercapture(pointer(1,0,0));if(activePointers.size||pinch||drag)throw Error('cancel cleanup');
+zoom=1;$('zoomIn').onclick();if(Math.abs(zoom-1.2)>.00001)throw Error('plus button');$('zoomOut').onclick();if(Math.abs(zoom-1)>.00001)throw Error('minus button');
+canvas.onpointerdown(pointer(1,0,0));canvas.onpointerdown(pointer(2,100,0));canvas.onpointerdown(pointer(3,200,0));canvas.onpointerup(pointer(1,0,0));const before=zoom;canvas.onpointermove(pointer(3,200,0));if(zoom!==before)throw Error('third finger rebase');canvas.onpointercancel(pointer(2,100,0));canvas.onpointercancel(pointer(3,200,0));
+\`);console.log('PASS: pinch in/out, clamps, one-finger rotation, no pinch tap, single tap, cancel/lost capture, zoom buttons, three-finger transition');
+`);let runner=fs.readFileSync('scripts/verify-project.cjs','utf8').replace("'verify-fast-scene.cjs','verify-camera.cjs'","'verify-fast-scene.cjs','verify-camera.cjs','verify-mobile-zoom.cjs'");fs.writeFileSync('scripts/verify-project.cjs',runner);
