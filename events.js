@@ -10,6 +10,17 @@ function showEventFx(kind,{title,subtitle,amount=0,player=turn,owner=-1,pos=play
  status(title+' · '+(amount>=0?'+':'−')+'¥'+Math.abs(amount).toLocaleString());return duration;
 }
 function eventProgress(now){return eventFx?Math.max(0,(now-eventFx.start)/eventFx.duration):1}
+function drawEstateEffects(now){
+ for(let i=0;i<tiles.length;i++){
+  const count=estateRun(i);if(count<3)continue;const p=point(i),grand=count>=5,color=grand?'#ffda70':'#80e2d9',h=.36+tiles[i].level*.42;
+  // Persistent perimeter and roof beacon remain legible with animations disabled.
+  for(const s of [-1,1]){box(p.x+s*.88,.255,p.z,.035,.045,1.79,color);box(p.x,.255,p.z+s*.88,1.79,.045,.035,color)}
+  ring(p.x,h+.18,p.z,grand?.27:.17,color);
+  if(grand)for(const s of [-1,1]){box(p.x+s*.17,h+.12,p.z,.045,.25,.045,color);box(p.x,h+.12,p.z+s*.17,.045,.25,.045,color)}
+  if(!effects)continue;
+  const n=grand?6:3;for(let j=0;j<n;j++){const a=now*.001*(grand?1.1:.7)+j*Math.PI*2/n,y=.45+((now*.0005+j/n)%1)*(grand?1.8:1.2);box(p.x+Math.cos(a)*.7,y,p.z+Math.sin(a)*.7,grand?.065:.045,.075,.045,color)}
+ }
+}
 function drawEventGeometry(now){if(!eventFx||!effects)return;const t=eventProgress(now);if(t>=1)return;const f=eventFx,p=point(f.pos),r=.6+((t*2)%1)*1.2;for(let j=0;j<28;j++){const a=j*Math.PI/14,b=(j+1)*Math.PI/14;poly([[p.x+Math.cos(a)*r,.3,p.z+Math.sin(a)*r],[p.x+Math.cos(b)*r,.3,p.z+Math.sin(b)*r],[p.x+Math.cos(b)*(r+.045),.3,p.z+Math.sin(b)*(r+.045)],[p.x+Math.cos(a)*(r+.045),.3,p.z+Math.sin(a)*(r+.045)]],f.color)}
  if(f.kind==='purchase'||f.kind==='upgrade'){const lift=Math.min(1,t*4);for(let a of [-1,1])for(let b of [-1,1])box(p.x+a*.7,.28,p.z+b*.7,.055,1.4*lift,.055,f.color)}
  if(f.kind==='fate'||f.kind==='chance'){for(let i=0;i<6;i++){let a=now*.001+i*Math.PI/3;box(p.x+Math.cos(a)*.7,1+Math.sin(a*2)*.25,p.z+Math.sin(a)*.7,.12,.24,.035,f.color)}}

@@ -1,0 +1,56 @@
+ }else{
+  // Anatomical quadrupeds: horizontal ribcage, shoulder/hip joints, hocks and muzzle.
+  const arctic=white,back=white?'#e5e9e5':dog?'#b9793c':'#b45c2c',leg=white?'#e7ece9':dog?'#d6a16b':'#39352f';
+  const bodyX=dog?.23:arctic?.225:.18,bodyY=dog?.245:arctic?.22:.19;
+  ball(0,.62,-.12,bodyX,bodyY,.435,fur,32,20);
+  ball(0,.73,-.19,bodyX*.89,.115,.35,back,28,16);
+  ball(0,.535,-.07,bodyX*.86,.14,.34,cream,24,16);
+  ball(0,.705,.23,dog?.21:.17,.26,.2,fur,28,18);
+  ball(0,.72,.35,.135,.21,.1,cream,24,16);
+  for(const s of [-1,1]){
+   // Forelegs run under the shoulders; the hind leg bends through a visible hock.
+   part=s<0?'frontL':'frontR';
+   ball(s*.145,.495,.23,.07,.205,.09,fur,20,14);
+   tube([[s*.145,.42,.24],[s*.145,.26,.25],[s*.145,.105,.28]],[.05,.035,.03],leg,14);
+   ball(s*.145,.066,.31,.048,.05,.082,dog?cream:leg,20,12);
+   part=s<0?'rearL':'rearR';
+   ball(s*.15,.54,-.41,.095,.17,.125,fur,24,16);
+   tube([[s*.15,.45,-.37],[s*.155,.275,-.5],[s*.155,.12,-.46]],[.07,.042,.028],fur,16);
+   tube([[s*.155,.22,-.49],[s*.155,.08,-.45]],[.033,.028],leg,14);
+   ball(s*.155,.061,-.414,.048,.047,.08,dog?cream:leg,18,12);
+   for(const z of [.36,-.36])for(const j of [-1,0,1])ball(s*.15+j*.023,.045,z,.009,.012,.022,white?'#969d99':'#54504a',10,6);
+  }part='body';
+  // Head is much smaller than the ribcage, with a projecting wedge-shaped snout.
+  const hy=dog?.94:.92,hz=.43,hx=dog?.195:arctic?.17:.145;
+  ball(0,hy,hz,hx,dog?.205:.175,dog?.20:.185,fur,32,22);
+  ball(0,hy-.067,hz+.085,hx*.92,.115,.145,cream,26,16);
+  tube([[0,hy-.035,hz+.09],[0,hy-.067,hz+.21],[0,hy-.084,hz+(dog?.31:.37)]],[dog?.115:.085,dog?.08:.055,dog?.05:.032],cream,20);
+  const noseZ=hz+(dog?.327:.384);
+  ball(0,hy-.076,noseZ,dog?.048:.033,.025,.025,'#292c2b',20,12);
+  ball(-.01,hy-.068,noseZ+.021,.01,.005,.004,'#848e8c',10,6);
+  for(const s of [-1,1]){
+   // Narrow almond eye sockets, dark iris and a small catchlight; no white doll eyes.
+   const ex=s*hx*.83,ey=hy+.025,ez=hz+.14;
+   ball(ex,ey,ez,.035,.023,.019,white?'#b3b6b2':'#6b4931',18,12);
+   ball(ex,ey,ez+.013,.027,.018,.012,white?'#776d45':'#44331e',20,12);
+   ball(ex,ey+.001,ez+.023,.016,.016,.005,'#151f20',14,10);
+   ball(ex-.007,ey+.007,ez+.028,.005,.004,.003,'#e9f1ed',8,6);
+   if(dog)ball(s*.132,hy+.085,hz+.132,.041,.019,.013,'#f3e5cc',16,10);
+   const earY=hy+.12,earX=s*hx*.75,earZ=hz-.03,eh=dog?.17:arctic?.145:.235;
+   // Closed ear volume; fur on the rim, a darker recessed interior.
+   for(let i=0;i<12;i++)for(let j=0;j<14;j++){
+    const ep=(row,col)=>{const t=row/12,a=col/14*Math.PI*2,r=(1-t)**.8;return[earX+s*t*.035+Math.cos(a)*(.073*r+.002),earY+t*eh,earZ+Math.sin(a)*(.047*r+.002)]};
+    face([ep(i,j),ep(i,j+1),ep(i+1,j+1),ep(i+1,j)],shade(fur,Math.round(Math.sin(j/14*Math.PI*2)*12)));
+   }
+   face([[earX-.045,earY+.025,earZ+.045],[earX+.045,earY+.025,earZ+.045],[earX+s*.031,earY+eh-.038,earZ+.014]],white?'#c6bbba':dog?'#9c7460':'#694d44');
+   // Fine ruff follows the neck rather than protruding as round cheeks.
+   for(let k=0;k<5;k++){let y=.735-k*.033,z=.31-k*.022;face([[s*.105,y+.05,z+.04],[s*.17,y+.025,z-.02],[s*(.145+k*.003),y-.04,z+.015]],cream)}
+   curve(t=>[s*(.02+t*.055),hy-.118-.005*Math.sin(t*Math.PI),noseZ-.015-t*.15],12,.0035,'#645e54',6);
+  }
+  // Breed-specific tail shapes. Red fox is long and low; arctic fox is fuller.
+  part='tail';
+  if(dog){const pts=Array.from({length:33},(_,i)=>{const t=i/32,a=-1.45+t*Math.PI*1.75;return[.065+Math.cos(a)*.16,.79+Math.sin(a)*.18,-.49-t*.035]});tube(pts,pts.map((_,i)=>i<25?.073:Math.max(.003,.073*(32-i)/7)),pts.map((_,i)=>i<25?fur:cream),18)}
+  else tube([[0,.65,-.48],[.04,.51,-.68],[.09,.34,-.88],[.12,.21,-1.06],[.13,.19,-1.19],[.13,.22,-1.28]],[.09,arctic?.17:.14,arctic?.18:.145,.115,.065,.003],[fur,fur,fur,cream,cream,cream],24);
+  part='body';
+  // Fit the natural full-length silhouette inside a single board station.
+  for(const f of faces)for(const p of f.pts){p[0]*=.8;p[1]*=.8;p[2]*=.8}

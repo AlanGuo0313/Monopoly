@@ -1,0 +1,5 @@
+const fs=require('node:fs');
+let s=fs.readFileSync('skins.js','utf8');s=s.slice(0,s.indexOf('function drawPlayerSkin('))+`function drawPlayerSkin(pose,now,id=selectedSkin,heading=null){drawDetailedSkin(pose,now,skinInfo(id).id,heading)}\n`;fs.writeFileSync('skins.js',s);
+s=fs.readFileSync('scene.js','utf8');const start=s.indexOf('function drawNailong('),end=s.indexOf('function render(now)',start);s=s.slice(0,start)+`function drawNailong(pose,now,heading=null){drawDetailedSkin(pose,now,'nailong',heading)}\n`+s.slice(end);fs.writeFileSync('scene.js',s);
+s=fs.readFileSync('index.html','utf8').replace('<script src="skins.js"></script>','<script src="skins.js"></script><script src="skin-models.js"></script>');fs.writeFileSync('index.html',s);
+for(const name of fs.readdirSync('scripts').filter(n=>n.endsWith('.cjs'))){const file='scripts/'+name;let text=fs.readFileSync(file,'utf8');if(text.includes("'skins.js'"))text=text.replaceAll("'skins.js'","'skins.js','skin-models.js'");if(name==='verify-menu.cjs')text=text.replace('faces.length>3500','faces.length>16000');fs.writeFileSync(file,text)}
